@@ -1,0 +1,32 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "debug",
+            "type": "shell",
+            "command": "mvn",
+            "args": [
+                "javafx:run",
+                "-Pdebug"
+            ],
+            "isBackground": true,
+            "problemMatcher": [
+                {
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": "Listening for transport dt_socket",
+                        "endsPattern": "Listening for transport dt_socket"
+                    },
+                    "pattern": [ // "background" alone causes a formatting error. A dummy pattern is needed.
+                        {
+                            "regexp": ".*",
+                            "kind": "file",
+                            "file": 1,
+                            "message": 1
+                        }
+                    ]
+                }
+            ],
+        }
+    ]
+}

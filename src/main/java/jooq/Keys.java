@@ -4,8 +4,8 @@
 package jooq;
 
 
-import jooq.tables.Messages;
-import jooq.tables.records.MessagesRecord;
+import jooq.tables.Message;
+import jooq.tables.records.MessageRecord;
 
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -24,5 +24,5 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<MessagesRecord> MESSAGES__SYNTHETIC_PK_MESSAGES = Internal.createUniqueKey(Messages.MESSAGES, DSL.name("SYNTHETIC_PK_messages"), new TableField[] { Messages.MESSAGES.ID }, true);
+    public static final UniqueKey<MessageRecord> MESSAGE__SYNTHETIC_PK_MESSAGE = Internal.createUniqueKey(Message.MESSAGE, DSL.name("SYNTHETIC_PK_message"), new TableField[] { Message.MESSAGE.ID }, true);
 }

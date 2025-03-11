@@ -9,8 +9,8 @@ import java.time.format.DateTimeFormatter;
 import static jooq.Tables.*;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultConfiguration;
-import jooq.tables.daos.MessagesDao;
-import jooq.tables.pojos.Messages;
+import jooq.tables.daos.MessageDao;
+import jooq.tables.pojos.Message;
 
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
@@ -22,7 +22,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class MainController {
-    private String dbUrl = "jdbc:sqlite:./todoapp.db";
+    private String dbPath = "jdbc:sqlite:./todoapp.db";
 
     @FXML
     private TextField inputField;
@@ -31,16 +31,16 @@ public class MainController {
     private TextArea outputArea;
 
     private String getChatHistory() {
-        try (Connection conn = DriverManager.getConnection(dbUrl)) {
+        try (Connection conn = DriverManager.getConnection(dbPath)) {
             var conf = new DefaultConfiguration().set(conn).set(SQLDialect.SQLITE);
-            var dao = new MessagesDao(conf);
+            var dao = new MessageDao(conf);
             // なんの条件もないなら
             // var messages = dao.findAll();
             var messages = dao.ctx()
-                    .selectFrom(MESSAGES)
-                    .orderBy(MESSAGES.DATE.asc())
+                    .selectFrom(MESSAGE)
+                    .orderBy(MESSAGE.DATE.asc())
                     .limit(10)
-                    .fetchInto(Messages.class);
+                    .fetchInto(Message.class);
 
             var history = "";
             for (var mes : messages) {
@@ -53,10 +53,10 @@ public class MainController {
     }
 
     private void addChatHistory(String name, String message) {
-        try (Connection conn = DriverManager.getConnection(dbUrl)) {
+        try (Connection conn = DriverManager.getConnection(dbPath)) {
             var conf = new DefaultConfiguration().set(conn).set(SQLDialect.SQLITE);
-            var dao = new MessagesDao(conf);
-            var mes = new Messages(null, name, message,
+            var dao = new MessageDao(conf);
+            var mes = new Message(null, name, message,
                     LocalDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             dao.insert(mes);
         } catch (Exception e) {

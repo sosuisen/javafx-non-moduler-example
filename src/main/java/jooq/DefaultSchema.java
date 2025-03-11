@@ -7,7 +7,7 @@ package jooq;
 import java.util.Arrays;
 import java.util.List;
 
-import jooq.tables.Messages;
+import jooq.tables.Message;
 
 import org.jooq.Catalog;
 import org.jooq.Table;
@@ -29,9 +29,9 @@ public class DefaultSchema extends SchemaImpl {
     public static final DefaultSchema DEFAULT_SCHEMA = new DefaultSchema();
 
     /**
-     * The table <code>messages</code>.
+     * The table <code>message</code>.
      */
-    public final Messages MESSAGES = Messages.MESSAGES;
+    public final Message MESSAGE = Message.MESSAGE;
 
     /**
      * No further instances allowed
@@ -49,7 +49,7 @@ public class DefaultSchema extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
-            Messages.MESSAGES
+            Message.MESSAGE
         );
     }
 }

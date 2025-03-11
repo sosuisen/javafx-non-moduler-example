@@ -4,7 +4,7 @@
 package jooq;
 
 
-import jooq.tables.Messages;
+import jooq.tables.Message;
 
 
 /**
@@ -14,7 +14,7 @@ import jooq.tables.Messages;
 public class Tables {
 
     /**
-     * The table <code>messages</code>.
+     * The table <code>message</code>.
      */
-    public static final Messages MESSAGES = Messages.MESSAGES;
+    public static final Message MESSAGE = Message.MESSAGE;
 }

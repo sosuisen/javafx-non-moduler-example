@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <jdbc>
+        <driver>org.sqlite.JDBC</driver>
+        <url>jdbc:sqlite:./todoapp.db</url>
+    </jdbc>
+
+    <generator>
+        <database>
+            <!-- The database type. The format here is:
+           org.jooq.meta.[database].[database]Database -->
+            <name>org.jooq.meta.sqlite.SQLiteDatabase</name>
+            <syntheticObjects>
+                <primaryKeys>
+                    <primaryKey>
+                        <fields>
+                            <field>id</field>
+                        </fields>
+                    </primaryKey>
+                </primaryKeys>
+            </syntheticObjects>
+        </database>
+
+        <target>
+            <directory>./src/main/java</directory>
+            <packageName>jooq</packageName>
+        </target>
+
+        <generate>
+            <!-- https://www.jooq.org/doc/3.20/manual/code-generation/codegen-object-types/codegen-pojos/#flags-influencing-generated-pojos -->
+            <daos>true</daos>
+        </generate>
+
+    </generator>
+</configuration>

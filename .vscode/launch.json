@@ -3,11 +3,10 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Run (Debug)",
-            "request": "attach",
-            "hostName": "localhost",
-            "port": 5005,
-            "preLaunchTask": "debugTask"
+            "name": "Launcher",
+            "request": "launch",
+            "mainClass": "com.example.Launcher",
+            "projectName": "aichat-db"
         }
     ]
 }

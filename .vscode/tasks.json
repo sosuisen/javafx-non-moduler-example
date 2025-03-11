@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "debug",
+            "label": "debugTask",
             "type": "shell",
             "command": "mvn",
             "args": [

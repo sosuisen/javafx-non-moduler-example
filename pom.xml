@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example</groupId>
-  <artifactId>no-module</artifactId>
+  <artifactId>aichat-db</artifactId>
   <version>1.0-SNAPSHOT</version>
   <description>Generated from jfx-sss-fxml archetype</description>
   <properties>
@@ -15,6 +15,7 @@
     <maven.compiler.release>21</maven.compiler.release>
     <main.class>com.example.Launcher</main.class>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.openjfx</groupId>
@@ -26,25 +27,15 @@
       <artifactId>javafx-fxml</artifactId>
       <version>${javafx.version}</version>
     </dependency>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-google-ai-gemini</artifactId>
+      <version>1.0.0-beta1</version>
+    </dependency>
   </dependencies>
+
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.0</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <outputFile>target/shaded/${project.artifactId}-${project.version}-shaded.jar</outputFile>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -54,13 +45,28 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.8.1</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/app/lib</outputDirectory>
+              <includeScope>runtime</includeScope>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
         <version>${javafx.plugin.version}</version>
         <configuration>
-          <stripDebug>true</stripDebug>
-          <noHeaderFiles>true</noHeaderFiles>
-          <noManPages>true</noManPages>
           <mainClass>${main.class}</mainClass>
           <options>
             <option>${debugOptions}</option>
@@ -72,8 +78,11 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.4.2</version>
         <configuration>
+          <outputDirectory>${project.build.directory}/app</outputDirectory>
           <archive>
             <manifest>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
               <mainClass>${main.class}</mainClass>
             </manifest>
           </archive>
@@ -83,27 +92,6 @@
         <groupId>org.panteleyev</groupId>
         <artifactId>jpackage-maven-plugin</artifactId>
         <version>1.6.6</version>
-        <configuration>
-          <name>${project.artifactId}</name>
-          <appVersion>1.0.0</appVersion>
-          <vendor>${project.groupId}</vendor>
-          <input>target/shaded</input>
-          <mainJar>${project.artifactId}-${project.version}-shaded.jar</mainJar>
-          <destination>target/jpackage</destination>
-          <!-- for debug -->
-          <!-- <winConsole>true</winConsole> -->
-          <javaOptions>
-            <option>-Dfile.encoding=UTF-8</option>            
-          </javaOptions>
-          <type>${jpackage.type}</type>
-          <!-- Options for MSI -->
-          <!--
-          <winDirChooser>true</winDirChooser>
-          <winMenu>true</winMenu>
-          <winShortcut>true</winShortcut>
-          <winShortcutPrompt>true</winShortcutPrompt>
-          -->
-        </configuration>
         <executions>
           <execution>
             <phase>package</phase>
@@ -112,10 +100,38 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <name>${project.artifactId}</name>
+          <appVersion>1.0.0</appVersion>
+          <vendor>${project.groupId}</vendor>
+          <input>${project.build.directory}/app/</input>
+          <mainJar>${project.artifactId}-${project.version}.jar</mainJar>
+          <destination>target/jpackage</destination>
+          <javaOptions>
+            <option>-Dfile.encoding=UTF-8</option>
+          </javaOptions>
+          <type>${jpackage.type}</type>
+          <!-- for debug -->
+          <!-- <winConsole>true</winConsole> -->
+          <!-- Options for MSI -->
+          <!--
+          <winDirChooser>true</winDirChooser>
+          <winMenu>true</winMenu>
+          <winShortcut>true</winShortcut>
+          <winShortcutPrompt>true</winShortcutPrompt>
+          -->
+        </configuration>
       </plugin>
     </plugins>
   </build>
+
   <profiles>
+    <profile>
+      <id>debug</id>
+      <properties>
+        <debugOptions>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005</debugOptions>
+      </properties>
+    </profile>
     <profile>
       <id>unix</id>
       <activation>
@@ -128,7 +144,6 @@
         <jpackage.type>APP_IMAGE</jpackage.type>
       </properties>
     </profile>
-
     <profile>
       <id>win</id>
       <activation>
@@ -142,7 +157,6 @@
         <jpackage.type>APP_IMAGE</jpackage.type>
       </properties>
     </profile>
-
     <profile>
       <id>mac</id>
       <activation>
@@ -153,13 +167,6 @@
       <properties>
         <!-- DMG or PKG -->
         <jpackage.type>DMG</jpackage.type>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>debug</id>
-      <properties>
-        <debugOptions>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005</debugOptions>
       </properties>
     </profile>
   </profiles>

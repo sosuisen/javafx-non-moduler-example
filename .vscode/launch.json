@@ -3,11 +3,11 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Run JavaFX (Debug)",
+            "name": "Run (Debug)",
             "request": "attach",
             "hostName": "localhost",
             "port": 5005,
-            "preLaunchTask": "debug"
+            "preLaunchTask": "debugTask"
         }
     ]
 }

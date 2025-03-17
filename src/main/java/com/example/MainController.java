@@ -71,7 +71,7 @@ public class MainController {
                 + "以上のやりとりを前提として回答してください。");
     }
 
-    private void startAiThread (String inputText, String exsistingText){
+    private void startAiThread (String inputText, String currentText){
         new Thread(() -> {
             try {
                 var gemini = GoogleAiGeminiChatModel.builder()
@@ -88,7 +88,7 @@ public class MainController {
 
                 Platform.runLater(() -> {
                     // UIスレッドで処理
-                    outputArea.setText(exsistingText + "\n\n[AI] " + response);
+                    outputArea.setText(currentText + "\n\n[AI] " + response);
                 });
                 Thread.sleep(500);
                 Platform.runLater(() -> {
@@ -105,15 +105,14 @@ public class MainController {
             var inputText = inputField.getText();
             inputField.clear();
 
-            var existingText = outputArea.getText();
-            existingText = existingText.isEmpty() ? "" : existingText + "\n";
-            existingText += "[あなた] " + inputText;
-
-            outputArea.setText(existingText);
+            var oldText = outputArea.getText();
+            oldText = oldText.isEmpty() ? "" : oldText + "\n";
+            var newText = oldText + "[あなた] " + inputText;
+            outputArea.setText(newText);
 
             addChatHistory("User", inputText);
 
-            startAiThread(inputText, existingText);
+            startAiThread(inputText, newText);
         });
     }
 }
